@@ -720,7 +720,11 @@ runs the same way, from [LiquidAI/LFM3-1.7B-GGUF](https://huggingface.co/LiquidA
 or its converted checkpoint: `coli import LFM3-1.7B-Q4_K_M.gguf`, with no tower to link. It differs
 in its context, 262144 against the VL's 128000, and that is how colibri names the two apart (the
 GGUF's `lfm3.context_length`, the checkpoint's `max_position_embeddings`): `LFM3-1.7B`, API model id
-`lfm3-1.7b-colibri`, against `LFM3-VL-2B`, `lfm3-vl-2b-colibri`.
+`lfm3-1.7b-colibri`, against `LFM3-VL-2B`, `lfm3-vl-2b-colibri`. Its chat template is byte for byte
+the VL's, so the gateway's renderer and `tests/test_lfm3_chat.py` are the same for both. The
+checkpoint [LiquidAI/LFM3-1.7B-Base](https://huggingface.co/LiquidAI/LFM3-1.7B-Base) has the
+same geometry and context, so it is named `LFM3-1.7B` too; the Omni and Audio GGUFs declare 128000
+and are named `LFM3-VL-2B`.
 
 24 layers, hidden 2048, a SwiGLU MLP of 7680 in every one. 13 are short gated
 convolutions, 11 attention (16 query heads of 128 over 4 KV heads), 5 of them over
