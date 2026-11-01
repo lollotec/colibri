@@ -1561,6 +1561,15 @@ FAMILIES = (
             DisplayVariant((("num_hidden_layers", 62),
                             ("num_experts", 256), ("hidden_size", 8192)),
                            "Muse-Spark-Open-816B-A42B", "816B", model_id="muse-spark-open-colibri"),
+            # LFM3-1.7B (text only) and LFM3-VL-2B share one text backbone, so the
+            # layer geometry alone cannot tell them apart. The context the file or
+            # checkpoint declares can: 262144 for the 1.7B, 128000 for the VL (its
+            # GGUF's lfm3.context_length and its text_config). This variant comes
+            # first so the VL's geometry, a subset of it, does not name the 1.7B.
+            DisplayVariant((("num_hidden_layers", 24), ("hidden_size", 2048),
+                            ("intermediate_size", 7680),
+                            ("max_position_embeddings", 262144)),
+                           "LFM3-1.7B", "1.7B", model_id="lfm3-1.7b-colibri"),
             DisplayVariant((("num_hidden_layers", 24), ("hidden_size", 2048),
                             ("intermediate_size", 7680)),
                            "LFM3-VL-2B", "2B", model_id="lfm3-vl-2b-colibri"),

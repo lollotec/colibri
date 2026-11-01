@@ -5,6 +5,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- LFM3-1.7B (text only, from its GGUFs or checkpoint) runs on the `lfm3` path LFM3-VL
+  added, but was named `LFM3-VL-2B` (API model id `lfm3-vl-2b-colibri`) because the two share
+  one text geometry. The registry now tells them apart by their context (262144 against
+  128000) and names it `LFM3-1.7B` (`lfm3-1.7b-colibri`).
+
 ### New
 
 - **The terminal UI, `coli tui`** (`c/tui.c`, `make colibri-tui`): the chat in a terminal, one

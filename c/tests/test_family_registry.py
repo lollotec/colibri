@@ -19,6 +19,7 @@ from family_registry import (
     UnknownFamilyError,
     PlannerUnsupportedError,
     _build_registry,
+    default_model_id,
     display_for,
     expert_contributions,
     fixed_resident_contribution,
@@ -1680,6 +1681,35 @@ class DisplayVariantTest(unittest.TestCase):
                    "text_config": QWEN36_35B_CONFIG}
         self.assertEqual(display_for(self._resolve(wrapped)), ("Qwen3.6-35B-A3B", "35B"))
 
+    # LFM3-1.7B (text) and LFM3-VL-2B share one text backbone: same layers, hidden size and
+    # MLP. Only the declared context differs (the 1.7B's config.json and GGUF say 262144, the
+    # VL's text_config and GGUF 128000), which is what names them apart.
+    LFM3_TEXT_CONFIG = {
+        "model_type": "lfm3", "architectures": ["Lfm3ForCausalLM"],
+        "hidden_size": 2048, "num_hidden_layers": 24, "num_attention_heads": 16,
+        "num_key_value_heads": 4, "head_dim": 128, "intermediate_size": 7680,
+        "vocab_size": 128000, "conv_L_cache": 7, "sliding_window": 256,
+        "max_position_embeddings": 262144, "use_sandwich_norm": True,
+    }
+
+    def test_lfm3_text_model_is_not_announced_as_the_vl(self):
+        resolved = self._resolve(self.LFM3_TEXT_CONFIG)
+        self.assertEqual(resolved.descriptor.id, "qwen36")
+        self.assertEqual(display_for(resolved), ("LFM3-1.7B", "1.7B"))
+        self.assertEqual(default_model_id(resolved), "lfm3-1.7b-colibri")
+
+    def test_lfm3_vl_keeps_its_name_and_id(self):
+        vl = dict(self.LFM3_TEXT_CONFIG, max_position_embeddings=128000)
+        resolved = self._resolve(vl)
+        self.assertEqual(display_for(resolved), ("LFM3-VL-2B", "2B"))
+        self.assertEqual(default_model_id(resolved), "lfm3-vl-2b-colibri")
+        # the HF repo nests the text config; the converter flattens it
+        wrapped = {"model_type": "lfm3_vl", "architectures": ["Lfm3VlForConditionalGeneration"],
+                   "text_config": vl}
+        resolved = self._resolve(wrapped)
+        self.assertEqual(display_for(resolved), ("LFM3-VL-2B", "2B"))
+        self.assertEqual(default_model_id(resolved), "lfm3-vl-2b-colibri")
+
     def test_unrecognised_geometry_names_itself(self):
         # a tiny fixture, or a third sibling: no borrowed parameter count
         tiny = dict(QWEN36_35B_CONFIG, num_hidden_layers=8, num_experts=8, hidden_size=64)
@@ -1700,7 +1730,7 @@ class DisplayVariantTest(unittest.TestCase):
         self.assertEqual([v["display_name"] for v in meta["display_variants"]],
                          ["Qwen3.6-35B-A3B", "Qwen3.8-2.4T-A95B", "Qwen3.8-27B",
                           "Qwen3-Coder-30B-A3B", "Qwen3-Coder-REAP-25B-A3B", "Flint",
-                          "Muse-Spark-Open-816B-A42B", "LFM3-VL-2B"])
+                          "Muse-Spark-Open-816B-A42B", "LFM3-1.7B", "LFM3-VL-2B"])
         self.assertEqual(meta["display_variants"][3]["geometry"],
                          {"num_hidden_layers": 48, "num_experts": 128, "hidden_size": 2048})
         self.assertEqual(meta["display_variants"][2]["geometry"],

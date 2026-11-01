@@ -714,6 +714,14 @@ this engine's container (`tools/convert_qwen36.py`, the dense trunk then in int8
 in int4 per 64 with `COLI_DENSE_BITS=4`). Its license is the LFM Open License v1.0
 (LICENSE in the repositories). Pictures too: see [LFM3-VL's vision tower](#lfm3-vls-vision-tower).
 
+[LiquidAI/LFM3-1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B), the text-only release, is the
+same backbone (24 layers, hidden 2048, MLP 7680, the same conv, attention and norm layout) and
+runs the same way, from [LiquidAI/LFM3-1.7B-GGUF](https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF)
+or its converted checkpoint: `coli import LFM3-1.7B-Q4_K_M.gguf`, with no tower to link. It differs
+in its context, 262144 against the VL's 128000, and that is how colibri names the two apart (the
+GGUF's `lfm3.context_length`, the checkpoint's `max_position_embeddings`): `LFM3-1.7B`, API model id
+`lfm3-1.7b-colibri`, against `LFM3-VL-2B`, `lfm3-vl-2b-colibri`.
+
 24 layers, hidden 2048, a SwiGLU MLP of 7680 in every one. 13 are short gated
 convolutions, 11 attention (16 query heads of 128 over 4 KV heads), 5 of them over
 a window of 256 positions. What the engine adds for it (`model_type: lfm3`, the

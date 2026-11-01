@@ -251,6 +251,7 @@ and MXFP4. The engines of every chat model above read GGUFs too
 | **Muse Spark Open** (816B, 42B active): text and tools, under Meta's licence agreement | unsloth, UD-IQ1_S 176 GB to UD-Q4_K_XL 505 GB | CUDA, Vulkan | 1.55-1.58 tok/s with Vulkan, 1.34-1.40 with CUDA, 0.83-0.89 on the CPU (D) |
 | **Flint** (40B, 2.5B active): text and tools, Apache 2.0 | unsloth, UD-IQ1_M 11.4 GB to BF16 79.6 GB | CUDA, Vulkan | UD-Q4_K_XL: 77.4 tok/s with CUDA, 77.7 with Vulkan, 15.8 on the CPU (D) |
 | **LFM3-VL-2B**: text, pictures and tools, LFM Open License | LiquidAI, QAD-Q4_0 to BF16 (or the checkpoint, converted) | CUDA, Vulkan | Q4_K_M: 235.1 tok/s with CUDA, 214.1 with Vulkan, 34.5 on the CPU (D) |
+| **LFM3-1.7B**: text, 256k context, LFM Open License | LiquidAI, QAD-Q4_0 to BF16 | as LFM3-VL (not tried) | not measured yet; Q4_K_M runs on the CPU |
 
 The larger models of the tables above from their GGUFs, on the same machine: [Benchmarks](#large-models-on-the-same-machine).
 
